@@ -1,5 +1,31 @@
 import { pool } from "../models/db.js";
 
+export const validarDate = async (req, res) => {
+	try{
+		const datos = req.body;
+		let name = datos.name;
+		let salary = datos.salary;
+		const{rows} = await pool.query('INSERT INTO datos(name,salary) VALUES (?, ?)',[name,salary])
+		res.render('alert');
+	}catch(err){
+		return res.status(500).json({
+      message: 'Something went wrong'
+    })
+	}
+}
+
+export const createDate = async (req, res) => {
+  try{
+		res.render('registro');
+
+  }catch(err){
+    return res.status(500).json({
+      message: 'Something went wrong'
+    })
+  }
+}
+
+/*
 export const getDatos = async(req,res) =>{
 	try{
 		const [rows] = await pool.query('SELECT * FROM datos')
@@ -83,3 +109,5 @@ export const deleteDato = async(req,res) => {
 		})
 	}
 }
+
+*/
