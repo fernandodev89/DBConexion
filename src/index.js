@@ -1,10 +1,12 @@
 import express from 'express';
-const app = express();
 import {PORT} from "./config.js"
 import { pool } from './models/db.js';
 import router from './routers/datos.routers.js';
 import morgan from 'morgan';
 
+const app = express();
+
+app.use(express.static("public"));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use('/api',router); 
