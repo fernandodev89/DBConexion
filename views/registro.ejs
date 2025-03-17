@@ -3,17 +3,22 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>Registro de Datos</title>
+	<link rel="stylesheet" href="/index.css">
 </head>
 <body>
-	<h1>Registro de datos</h1>
-	<form action="/validar" method="post">
-		Nombre:
-		<input type="text" name="name" id="name"> <br><br>
-		Salario:
-		<input type="text" name="salary" id="salary"> <br><br>
-		<input type="submit" value="Registrar">
-		<button ><a href="/">Regresar</a></button>
-	</form>
+	<div class="container">
+		<h1>Registro de Datos</h1>
+		<form action="/validar" method="post">
+			<label for="name">Nombre:</label>
+			<input type="text" name="name" id="name" required>
+
+			<label for="salary">Salario:</label>
+			<input type="text" name="salary" id="salary" required>
+
+			<button type="submit" class="btn">Registrar</button>
+		</form>
+		<a href="/" class="back-link">Regresar</a>
+	</div>
 </body>
 </html>
