@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Registro de Datos</title>
-	<link rel="stylesheet" href="/index.css">
-</head>
-<body>
-	<div class="container">
-		<h1>Registro de Datos</h1>
-		<form action="/validar" method="post">
-			<label for="name">Nombre:</label>
-			<input type="text" name="name" id="name" required>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Datos</title>
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Registro de Datos prueba</h1>
 
-			<label for="salary">Salario:</label>
-			<input type="text" name="salary" id="salary" required>
+      <form action="/start" method="post">
+        <button type="submit" class="btn">Start</button>
+      </form>
 
-			<button type="submit" class="btn">Registrar</button>
-		</form>
-		<a href="/" class="back-link">Regresar</a>
-	</div>
-</body>
+      <form action="/validar" method="post">
+        <label for="name">Nombre:</label>
+        <input type="text" name="name" id="name" required />
+        <button type="submit" class="btn">Registrar</button>
+      </form>
+
+      <form action="/commit" method="post">
+        <button type="submit" class="btn">Commit</button>
+      </form>
+
+      <form action="/rollback" method="post">
+        <button type="submit" class="btn">Cancelar</button>
+      </form>
+      <a href="/" class="back-link">Regresar</a>
+    </div>
+  </body>
 </html>

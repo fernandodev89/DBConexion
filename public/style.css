@@ -29,7 +29,9 @@ h1 {
 /* Contenedor principal */
 .container {
 	margin-top: 20px;
+	padding: 40px;
 }
+
 
 /* Botón estilizado */
 .btn {
