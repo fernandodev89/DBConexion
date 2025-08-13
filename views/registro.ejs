@@ -29,5 +29,36 @@
       </form>
       <a href="/" class="back-link">Regresar</a>
     </div>
+    <h2>Control de aislamiento</h2>
+    
+<select id="level">
+  <option>READ UNCOMMITTED</option>
+  <option>READ COMMITTED</option>
+  <option>REPEATABLE READ</option>
+  <option>SERIALIZABLE</option>
+</select>
+<button onclick="setLevel()">Cambiar</button>
+<button onclick="getLevel()">Ver actual</button>
+
+<h3>Pruebas</h3>
+<button onclick="fetch('/demo/dirty').then(r=>r.json()).then(console.log)">Lectura sucia</button>
+<button onclick="fetch('/demo/non-repeatable').then(r=>r.json()).then(console.log)">Lectura no repetible</button>
+<button onclick="fetch('/demo/phantom').then(r=>r.json()).then(console.log)">Lectura fantasma</button>
+
+<script>
+function setLevel() {
+    fetch('/isolation', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ level: document.getElementById('level').value })
+    }).then(r=>r.json()).then(console.log);
+}
+
+function getLevel() {
+    fetch('/isolation')
+        .then(r=>r.json())
+        .then(console.log);
+}
+</script>
   </body>
 </html>

@@ -17,6 +17,27 @@ export const validarDate = async (req, res) => {
   }
 };
 
+// Cambiar el nivel de aislamiento
+export async function setIsolationLevel(req, res) {
+    const { level } = req.body;
+    try {
+        await req.connection.query(`SET TRANSACTION ISOLATION LEVEL ${level}`);
+        res.json({ message: `Nivel de aislamiento cambiado a ${level}` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+// Consultar el nivel de aislamiento actual
+export async function getIsolationLevel(req, res) {
+    try {
+        const [rows] = await req.connection.query("SELECT @@transaction_isolation AS isolation_level");
+        res.json({ isolation_level: rows[0].isolation_level });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 export const startDB = async (req, res) => {
   try {
     await pool.query('START TRANSACTION');
