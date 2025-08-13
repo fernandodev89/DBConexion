@@ -30,7 +30,7 @@
       <a href="/" class="back-link">Regresar</a>
     </div>
     <h2>Control de aislamiento</h2>
-    
+
 <select id="level">
   <option>READ UNCOMMITTED</option>
   <option>READ COMMITTED</option>
@@ -39,11 +39,51 @@
 </select>
 <button onclick="setLevel()">Cambiar</button>
 <button onclick="getLevel()">Ver actual</button>
+<table border="1" id="dataTable">
+    <thead></thead>
+    <tbody></tbody>
+</table>
 
-<h3>Pruebas</h3>
-<button onclick="fetch('/demo/dirty').then(r=>r.json()).then(console.log)">Lectura sucia</button>
-<button onclick="fetch('/demo/non-repeatable').then(r=>r.json()).then(console.log)">Lectura no repetible</button>
-<button onclick="fetch('/demo/phantom').then(r=>r.json()).then(console.log)">Lectura fantasma</button>
+<script>
+function renderTable(rows) {
+    const tableHead = document.querySelector("datos");
+    const tableBody = document.querySelector("id, name");
+
+    // Limpiar contenido anterior
+    tableHead.innerHTML = "";
+    tableBody.innerHTML = "";
+
+    if (rows.length > 0) {
+        // Encabezados
+        const headers = Object.keys(rows[0]);
+        const headRow = document.createElement("tr");
+        headers.forEach(h => {
+            const th = document.createElement("th");
+            th.textContent = h;
+            headRow.appendChild(th);
+        });
+        tableHead.appendChild(headRow);
+
+        // Filas de datos
+        rows.forEach(row => {
+            const tr = document.createElement("tr");
+            headers.forEach(h => {
+                const td = document.createElement("td");
+                td.textContent = row[h];
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+        });
+    } else {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 100;
+        td.textContent = "No hay datos";
+        tr.appendChild(td);
+        tableBody.appendChild(tr);
+    }
+}
+</script>
 
 <script>
 function setLevel() {
@@ -53,6 +93,7 @@ function setLevel() {
         body: JSON.stringify({ level: document.getElementById('level').value })
     }).then(r=>r.json()).then(console.log);
 }
+
 
 function getLevel() {
     fetch('/isolation')

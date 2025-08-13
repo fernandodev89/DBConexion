@@ -42,6 +42,73 @@
 			<tbody></tbody>
 		</table>
 	</div>
+
+	<script>
+		function setIsolation() {
+			const level = document.getElementById("isolationLevel").value;
+			fetch("/isolation", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ level })
+			})
+			.then(res => res.json())
+			.then(data => alert(data.message || data.error))
+			.catch(err => console.error(err));
+		}
+
+		function getIsolation() {
+			fetch("/isolation")
+				.then(res => res.json())
+				.then(data => {
+					document.getElementById("currentLevel").textContent =
+						data.isolation_level || "No disponible";
+				})
+				.catch(err => console.error(err));
+		}
+
+		function loadData() {
+			fetch("/data")
+				.then(res => res.json())
+				.then(rows => {
+					const tableHead = document.querySelector("datos");
+					const tableBody = document.querySelector("id, name");
+
+					// Limpiar tabla
+					tableHead.innerHTML = "";
+					tableBody.innerHTML = "";
+
+					if (rows.length > 0) {
+						// Encabezados
+						const headers = Object.keys(rows[0]);
+						const headRow = document.createElement("tr");
+						headers.forEach(h => {
+							const th = document.createElement("th");
+							th.textContent = h;
+							headRow.appendChild(th);
+						});
+						tableHead.appendChild(headRow);
+
+						// Filas
+						rows.forEach(row => {
+							const tr = document.createElement("tr");
+							headers.forEach(h => {
+								const td = document.createElement("td");
+								td.textContent = row[h];
+								tr.appendChild(td);
+							});
+							tableBody.appendChild(tr);
+						});
+					} else {
+						const tr = document.createElement("tr");
+						const td = document.createElement("td");
+						td.colSpan = 100;
+						td.textContent = "No hay datos";
+						tr.appendChild(td);
+						tableBody.appendChild(tr);
+					}
+				})
+				.catch(err => console.error(err));
+		}
 	</script>
 </body>
 </html>
