@@ -1,26 +1,32 @@
-import express from 'express';
-import {PORT} from "./config.js"
-import { pool } from './models/db.js';
-import router from './routers/datos.routers.js';
-import morgan from 'morgan';
+import express from "express";
+import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
+import { PORT } from "./config.js";
+import router from "./routers/datos.routers.js";
 
-//objetos para llamar los metodos de express
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
-//middleware
-app.use(express.static("public"));
-//maneja datos que vienen de otra pagina
-app.use(express.urlencoded({ extended:false}));
+// Static
+app.use(express.static(path.join(__dirname, "..", "public")));
 
-//motor de vistas
-app.set("view engine", "ejs")
-
+// Body parsers
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(morgan('dev'));
 
-//pagina principal
-app.use('/',router); 
+// Logger
+app.use(morgan("dev"));
 
-app.listen(PORT, ()=> {
-   console.log("Server is running on port ",PORT)
-})
+// Views
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "..", "views"));
+
+// Routes
+app.use("/", router);
+
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en http://localhost:${PORT}`);
+});

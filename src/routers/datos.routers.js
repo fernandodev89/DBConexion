@@ -1,17 +1,31 @@
 import { Router } from "express";
-import { validarDate,createDate,startDB,commitTransaction,rollbackTransaction} from "../controller/datos.controller.js";
-import {setIsolationLevel, getIsolationLevel, dirtyReadDemo, nonRepeatableReadDemo,
-    phantomReadDemo
-} from '../controller/datos.controller.js';
-const router =  Router();
-router.post('/validar',validarDate);
-router.get('/addDates',createDate);
-router.post('/start',startDB);
-router.post('/commit',commitTransaction);
-router.post('/rollback',rollbackTransaction);
-router.post('/isolation', setIsolationLevel);
-router.get('/isolation', getIsolationLevel);
-/*
-*/
+import {
+  validarDate,
+  createDate,
+  startDB,
+  commitTransaction,
+  rollbackTransaction,
+  setIsolationLevel,
+  getIsolationLevel,
+  getDatos,
+} from "../controller/datos.controller.js";
 
-export default router
+const router = Router();
+
+// UI mínima
+router.get("/addDates", createDate);
+
+// Transacciones
+router.post("/start", startDB);
+router.post("/commit", commitTransaction);
+router.post("/rollback", rollbackTransaction);
+
+// Aislamiento
+router.post("/isolation", setIsolationLevel);
+router.get("/isolation", getIsolationLevel);
+
+// Operaciones de datos
+router.post("/validar", validarDate);
+router.get("/getData", getDatos);
+
+export default router;

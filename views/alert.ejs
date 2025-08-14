@@ -1,49 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Todo Funciona Correctamente</title>
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			background-color: #f0f8ff; /* Azul claro */
-			margin: 0;
-			padding: 0;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100vh;
-			text-align: center;
-		}
-
-		h1 {
-			font-size: 32px;
-			color: #007BFF; /* Azul fuerte */
-			margin-bottom: 20px;
-			font-weight: bold;
-		}
-
-		a {
-			text-decoration: none;
-			padding: 12px 24px;
-			background-color: #007BFF; /* Azul fuerte */
-			color: white;
-			font-size: 18px;
-			border-radius: 8px;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-			transition: background-color 0.3s ease, transform 0.3s ease;
-		}
-
-		a:hover {
-			background-color: #0056b3; /* Azul más oscuro */
-			transform: scale(1.05);
-		}
-	</style>
+  <meta charset="UTF-8" />
+  <title>Demo Transacciones & Aislamiento</title>
+  <style>
+    body { font-family: system-ui, Arial; max-width: 900px; margin: 24px auto; }
+    section { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    h2 { margin: 0 0 12px; }
+    button, select, input[type=text] { padding: 8px 10px; margin: 4px 6px 4px 0; }
+    code { background: #f6f6f6; padding: 2px 6px; border-radius: 4px; }
+    .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    #log { white-space: pre-wrap; background:#0b1020; color:#e6edf3; padding:12px; border-radius:8px; min-height:100px; }
+  </style>
 </head>
 <body>
-	<h1>Todo Funcionó Correctamente!</h1>
-	<a href="/addDates">REGRESAR</a>
+  <h1>Demo: Niveles de aislamiento y transacciones</h1>
+
+  <section>
+    <h2>Aislamiento</h2>
+    <div class="row">
+      <select id="level">
+        <option>READ UNCOMMITTED</option>
+        <option selected>READ COMMITTED</option>
+        <option>REPEATABLE READ</option>
+        <option>SERIALIZABLE</option>
+      </select>
+      <button onclick="setLevel()">Definir para la próxima transacción</button>
+      <button onclick="getLevel()">Ver aislamiento actual</button>
+    </div>
+    <div id="iso"></div>
+  </section>
+
+  <section>
+    <h2>Transacción</h2>
+    <div class="row">
+      <button onclick="start()">START</button>
+      <button onclick="commit()">COMMIT</button>
+      <button onclick="rollback()">ROLLBACK</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Operaciones</h2>
+    <div class="row">
+      <input type="text" id="name" placeholder="Nombre..." />
+      <button onclick="insertar()">INSERT (tabla datos)</button>
+      <button onclick="consultar()">SELECT (imprime en consola y abajo)</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Log</h2>
+    <div id="log"></div>
+  </section>
+
+<script>
+function log(msg) {
+  const el = document.getElementById('log');
+  const now = new Date().toLocaleString();
+  el.textContent = `[${now}] ${msg}\n` + el.textContent;
+}
+
+async function setLevel() {
+  const level = document.getElementById('level').value;
+  const r = await fetch('/isolation', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ level })
+  });
+  const j = await r.json();
+  log(`Set /isolation → ${JSON.stringify(j)}`);
+}
+
+async function getLevel() {
+  const r = await fetch('/isolation');
+  const j = await r.json();
+  document.getElementById('iso').textContent = JSON.stringify(j, null, 2);
+  log(`GET /isolation → ${JSON.stringify(j)}`);
+}
+
+async function start() {
+  const r = await fetch('/start', { method: 'POST' });
+  const j = await r.json();
+  log(`POST /start → ${JSON.stringify(j)}`);
+}
+
+async function commit() {
+  const r = await fetch('/commit', { method: 'POST' });
+  const j = await r.json();
+  log(`POST /commit → ${JSON.stringify(j)}`);
+}
+
+async function rollback() {
+  const r = await fetch('/rollback', { method: 'POST' });
+  const j = await r.json();
+  log(`POST /rollback → ${JSON.stringify(j)}`);
+}
+
+async function insertar() {
+  const name = document.getElementById('name').value;
+  const r = await fetch('/validar', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ name })
+  });
+  const j = await r.json();
+  log(`POST /validar → ${JSON.stringify(j)}`);
+}
+
+async function consultar() {
+  const r = await fetch('/getData');
+  const j = await r.json();
+  log(`GET /getData → count=${j.count}`);
+  console.log('Filas leídas:', j.rows);
+}
+</script>
 </body>
 </html>
