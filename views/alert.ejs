@@ -11,10 +11,11 @@
     code { background: #f6f6f6; padding: 2px 6px; border-radius: 4px; }
     .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     #log { white-space: pre-wrap; background:#0b1020; color:#e6edf3; padding:12px; border-radius:8px; min-height:100px; }
+    .iso{color: white;}
   </style>
 </head>
 <body>
-  <h1>Demo: Niveles de aislamiento y transacciones</h1>
+  <h1>Niveles de aislamiento y transacciones</h1>
 
   <section>
     <h2>Aislamiento</h2>
@@ -28,7 +29,7 @@
       <button onclick="setLevel()">Definir para la próxima transacción</button>
       <button onclick="getLevel()">Ver aislamiento actual</button>
     </div>
-    <div id="iso"></div>
+    <div id="iso" class="iso"></div>
   </section>
 
   <section>
@@ -45,7 +46,7 @@
     <div class="row">
       <input type="text" id="name" placeholder="Nombre..." />
       <button onclick="insertar()">INSERT (tabla datos)</button>
-      <button onclick="consultar()">SELECT (imprime en consola y abajo)</button>
+      <button onclick="consultar()">SELECT (imprime en consola )</button>
     </div>
   </section>
 
@@ -55,10 +56,11 @@
   </section>
 
 <script>
+  
 function log(msg) {
   const el = document.getElementById('log');
-  const now = new Date().toLocaleString();
-  el.textContent = `[${now}] ${msg}\n` + el.textContent;
+  const fechaHora = new Date().toLocaleString();
+  el.textContent = `${msg}\n` + el.textContent;
 }
 
 async function setLevel() {
@@ -109,11 +111,12 @@ async function insertar() {
 }
 
 async function consultar() {
-  const r = await fetch('/getData');
+  const r = await fetch('/getData'); 
   const j = await r.json();
-  log(`GET /getData → count=${j.count}`);
+  log(`GET /getData → count=${j.count}; aislamiento=${j.isolation}`);
   console.log('Filas leídas:', j.rows);
 }
+
 </script>
 </body>
 </html>
